@@ -15,8 +15,8 @@ SmartClick simulate native app click in mobile device.
 	var sc = new SmartClick('ui-smartclick');
 
 ##el
-	__el__ 
-		list wrapper id or wrapper Element Object
+__el__ 
+	list wrapper id or wrapper Element Object
 
 ##OPTIONS
 
