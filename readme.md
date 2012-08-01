@@ -15,7 +15,8 @@ SmartClick simulate native app click in mobile device.
 	var sc = new SmartClick('ui-smartclick');
 
 ##el
-	el is list wrapper id or wrapper Element Object
+	__el__ 
+		list wrapper id or wrapper Element Object
 
 ##OPTIONS
 
@@ -46,5 +47,5 @@ __onUnSel__
 
 ##Method
 
-destory
+__destory__
 	you can call destory function to destory Instance
