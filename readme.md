@@ -35,7 +35,7 @@ __sensTime__
 	default is 80, time of sensitivity in ms
 
 __sensDist__
-	default is 0.4, distance of sensitivity, if value less then 1 for wrapper size percentage, more then 1 is the absolute pixel
+	default is 0.4, distance of sensitivity, if value less than 1 for wrapper size percentage, more then 1 is the absolute pixel
 
 ###Events
 

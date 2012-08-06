@@ -21,7 +21,7 @@
  * 		className : default is 'ui-selected', list item selected className
  *		layoutDir : default is 'vertical', list view layout mode : 'horizontal', 'vertical', 'both'
  *		sensTime : default is 80, time of sensitivity in ms
- *		sensDist : default is 0.4, distance of sensitivity, if value less then 1 for wrapper size percentage, more then 1 is the absolute pixel
+ *		sensDist : default is 0.4, distance of sensitivity, if value less than 1 for wrapper size percentage, more then 1 is the absolute pixel
  *		onSel : when user select item, will be exec in selected item context
  *		onUnSel : when user unselect item, will be exec in unselect item context
  * 	}
@@ -210,6 +210,8 @@
 				}
 			},
 			clickEnd : function(e) {
+				var cb;
+
 				e.preventDefault();
 
 				off(doc, MOVE_EV, this);
@@ -220,9 +222,9 @@
 					addClass(this.selEl, this.options.className);
 				} else if (this.isMoved === false) {
 					if (this.options.multiSel === true && hasClass(this.currEl, this.options.className)) {
-						this.options.onUnSel && this.options.onUnSel.call(this.currEl);
+						cb = this.options.onUnSel;
 					} else {
-						this.options.onSel && this.options.onSel.call(this.currEl);
+						cb = this.options.onSel;
 					}
 				}
 
@@ -231,6 +233,10 @@
 				}
 				if (this.timerId !== -1 || this.options.multiSel === true) {
 					this.clickTimeout();
+				}
+
+				if (typeof(cb) === 'function') {
+					cb.call(this.currEl);
 				}
 
 				this.isMoved = false;
