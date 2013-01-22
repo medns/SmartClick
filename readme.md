@@ -12,7 +12,7 @@ SmartClick simulate native app click in mobile device.
 		<li ui-smartclick></li>
 		<li ui-smartclick></li>
 	</ul>
-	var sc = new SmartClick('ui-smartclick');
+	var sc = new SmartClick('wrapper');
 
 ##el
 __el__ 
@@ -28,8 +28,8 @@ __className__
 __layoutDir__
 	default is 'vertical', list view layout mode : 'horizontal', 'vertical', 'both'
 
-__multiSel__
-	default is false, indicate whether to support the multiple choice
+__modeType__
+	default is 'single', list or button mode type : 'single', 'mutil', 'tap', 'single' is Single-selection list, 'mutil' is Multiple-selection list, 'tap' is click.
 
 __sensTime__
 	default is 80, time of sensitivity in ms

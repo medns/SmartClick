@@ -2,8 +2,7 @@
  * SmartClick
  * simulate native app list click in mobile device 
  *
- * @version
- * 1.0.00 (August 1 2012)
+ * @version 1.2.00 (January 22 2013)
  * 
  * @copyright
  * Copyright (C) 2012- SuperZheng.
@@ -18,6 +17,7 @@
  * var sc = new SmartClick(el, options);
  * 	el is list wrapper id or wrapper Element
  * 	options is Object = {
+ * 		modeType : default is 'single', list or button mode type : 'single', 'mutil', 'tap'
  * 		className : default is 'ui-selected', list item selected className
  *		layoutDir : default is 'vertical', list view layout mode : 'horizontal', 'vertical', 'both'
  *		sensTime : default is 80, time of sensitivity in ms
@@ -107,15 +107,15 @@
 			var p;
 			this.el = typeof el == 'object' ? el : doc.getElementById(el);
 			this.options = {
+				modeType : 'single',
 				className : 'ui-selected',
 				layoutDir : 'vertical',
-				multiSel : false,
 				sensTime : 120,
 				sensDist : 0.4,
 
 				//Events
 				onSel : null,
-				onUnSel : null,
+				onUnSel : null
 			};
 			for (p in options) {
 				if (options.hasOwnProperty(p)) {
@@ -152,6 +152,10 @@
 			clickStart : function(e) {
 				var target, cb = this;
 
+				if (typeof(e.which) === 'number' && e.which !== 1) {
+					return;
+				}
+
 				e = hasTouch ? e.changedTouches[0] : e;
 
 				target = e.target;
@@ -161,10 +165,10 @@
 				if (!target) {
 					return;
 				}
-				if (this.options.multiSel === false) {
+				if (this.options.modeType === 'single') {
 					this.selEl = this.el.querySelector('*[ui-smartclick].' + this.options.className);
 				}
-				if (target === this.el || (this.options.multiSel === false && target === this.selEl)) {
+				if (target === this.el || (this.options.modeType === 'single' && target === this.selEl)) {
 					return;
 				}
 				this.startPoint = [e.pageX, e.pageY];
@@ -174,10 +178,19 @@
 				on(doc, END_EV, this);
 				on(doc, CANCEL_EV, this);
 
-				if (this.options.multiSel === false) {
-					this.timerId = setTimeout(function() {
-						cb.clickTimeout();
-					}, this.options.sensTime);
+				switch(this.options.modeType) {
+					case 'single' : {
+						this.timerId = setTimeout(function() {
+							cb.clickTimeout();
+						}, this.options.sensTime);
+						break;
+					}
+					case 'tap' : {
+						if (!hasClass(this.currEl, this.options.className)) {
+							addClass(this.currEl, this.options.className);
+						}
+						break;
+					}
 				}
 			},
 			clickTimeout : function() {
@@ -185,7 +198,7 @@
 					if (this.selEl) {
 						removeClass(this.selEl, this.options.className);
 					}
-					if (this.options.multiSel === true && hasClass(this.currEl, this.options.className)) {
+					if (this.options.modeType === 'mutil' && hasClass(this.currEl, this.options.className)) {
 						removeClass(this.currEl, this.options.className);
 					} else {
 						addClass(this.currEl, this.options.className);
@@ -204,7 +217,7 @@
 
 				if (this.isMoved === false && (((this.options.layoutDir === 'horizontal' || this.options.layoutDir === 'both') && offset[0] > sensDist[0]) || ((this.options.layoutDir === 'vertical' || this.options.layoutDir === 'both') && offset[1] > sensDist[1]))) {
 					this.isMoved = true;
-					if (this.options.multiSel === false) {
+					if (this.options.modeType === 'single' || this.options.modeType === 'tap') {
 						removeClass(this.currEl, this.options.className);
 					}
 				}
@@ -221,7 +234,7 @@
 				if (this.isMoved === true && this.selEl !== null) {
 					addClass(this.selEl, this.options.className);
 				} else if (this.isMoved === false) {
-					if (this.options.multiSel === true && hasClass(this.currEl, this.options.className)) {
+					if (this.options.modeType === 'mutil' && hasClass(this.currEl, this.options.className)) {
 						cb = this.options.onUnSel;
 					} else {
 						cb = this.options.onSel;
@@ -231,8 +244,11 @@
 				if (this.timerId !== -1) {
 					clearTimeout(this.timerId);
 				}
-				if (this.timerId !== -1 || this.options.multiSel === true) {
+				if (this.timerId !== -1 || this.options.modeType === 'mutil') {
 					this.clickTimeout();
+				}
+				if (this.options.modeType === 'tap') {
+					removeClass(this.currEl, this.options.className);
 				}
 
 				if (typeof(cb) === 'function') {
