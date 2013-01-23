@@ -152,7 +152,7 @@
 			clickStart : function(e) {
 				var target, cb = this;
 
-				if (typeof(e.which) === 'number' && e.which !== 1) {
+				if (!hasTouch && e.which !== 1) {
 					return;
 				}
 
